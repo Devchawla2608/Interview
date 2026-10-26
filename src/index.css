@@ -1,0 +1,271 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* --------------------------------------------------
+   Global Theme Foundation
+-------------------------------------------------- */
+html.light {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.light body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+html.dark body {
+  background-color: #020617;
+  color: #f8fafc;
+}
+
+/* --------------------------------------------------
+   Light Mode Overrides for Slate Surfaces
+-------------------------------------------------- */
+html.light header {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+/* Base card surfaces: translate slate-900 to white */
+html.light .bg-slate-900,
+html.light .bg-slate-900\/95,
+html.light .bg-slate-900\/90,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/70,
+html.light .bg-slate-900\/60,
+html.light .bg-slate-900\/50,
+html.light .bg-slate-900\/40 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+/* Background surfaces & inner panels: translate slate-950 to soft light-gray */
+html.light .bg-slate-950,
+html.light .bg-slate-950\/90,
+html.light .bg-slate-950\/80,
+html.light .bg-slate-950\/70,
+html.light .bg-slate-950\/60,
+html.light .bg-slate-950\/50 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+/* Secondary controls & subtle surfaces: translate slate-800 to slate-100 */
+html.light .bg-slate-800,
+html.light .bg-slate-800\/90,
+html.light .bg-slate-800\/80,
+html.light .bg-slate-800\/70,
+html.light .bg-slate-800\/60,
+html.light .bg-slate-800\/50,
+html.light .bg-slate-800\/40 {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+html.light .bg-slate-700,
+html.light .bg-slate-700\/80 {
+  background-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+/* Modal Backdrops in Light Mode */
+html.light .fixed.inset-0.bg-slate-950\/80,
+html.light .fixed.inset-0.bg-slate-950\/90,
+html.light .fixed.inset-0.bg-black\/80,
+html.light .fixed.inset-0.bg-black\/60 {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+/* Borders in Light Mode */
+html.light .border-slate-800,
+html.light .border-slate-700,
+html.light .border-slate-800\/50,
+html.light .border-slate-800\/60 {
+  border-color: #e2e8f0 !important;
+}
+
+/* --------------------------------------------------
+   Text Hierarchy in Light Mode
+-------------------------------------------------- */
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5,
+html.light h6 {
+  color: #0f172a !important;
+}
+
+/* By default in light mode, text-white becomes high-contrast dark text */
+html.light .text-white {
+  color: #0f172a !important;
+}
+
+/* STRICTLY PRESERVE crisp white text on vivid colored action buttons and badges */
+html.light button.bg-indigo-600,
+html.light button.bg-indigo-500,
+html.light button.bg-emerald-600,
+html.light button.bg-emerald-500,
+html.light button.bg-rose-600,
+html.light button.bg-rose-500,
+html.light button.bg-blue-600,
+html.light button.bg-violet-600,
+html.light button.bg-purple-600,
+html.light button.bg-amber-600,
+html.light [class*="bg-indigo-600"] text,
+html.light a.bg-indigo-600,
+html.light .keep-white,
+html.light .keep-white *,
+html.light button.bg-indigo-600 *,
+html.light button.bg-indigo-500 *,
+html.light button.bg-emerald-600 *,
+html.light button.bg-rose-600 *,
+html.light button.bg-blue-600 *,
+html.light button.bg-violet-600 * {
+  color: #ffffff !important;
+}
+
+/* Secondary & slate buttons in Light Mode must have crisp dark text */
+html.light button.bg-slate-800,
+html.light button.bg-slate-800 *,
+html.light button.bg-slate-900,
+html.light button.bg-slate-900 *,
+html.light button.bg-slate-700,
+html.light button.bg-slate-700 *,
+html.light button.border-slate-700,
+html.light button.border-slate-700 *,
+html.light button.border-slate-800,
+html.light button.border-slate-800 *,
+html.light button.bg-slate-100,
+html.light button.bg-slate-100 * {
+  color: #0f172a !important;
+}
+
+/* Standard Slate Text in Light Mode */
+html.light .text-slate-300,
+html.light .text-slate-200,
+html.light .text-slate-100 {
+  color: #1e293b !important;
+}
+
+html.light .text-slate-400 {
+  color: #475569 !important;
+}
+
+html.light .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* --------------------------------------------------
+   High-Contrast Colorful Badges & Pills in Light Mode
+-------------------------------------------------- */
+html.light .text-indigo-300,
+html.light .text-indigo-400 {
+  color: #3730a3 !important; /* Rich Indigo 800 */
+}
+
+html.light .text-emerald-300,
+html.light .text-emerald-400 {
+  color: #065f46 !important; /* Rich Emerald 800 */
+}
+
+html.light .text-amber-300,
+html.light .text-amber-400 {
+  color: #92400e !important; /* Rich Amber 800 */
+}
+
+html.light .text-rose-300,
+html.light .text-rose-400 {
+  color: #9f1239 !important; /* Rich Rose 800 */
+}
+
+html.light .bg-indigo-500\/10,
+html.light .bg-indigo-500\/20,
+html.light .bg-indigo-600\/20,
+html.light .bg-indigo-600\/30 {
+  background-color: #e0e7ff !important;
+  border-color: #c7d2fe !important;
+}
+
+html.light .bg-emerald-500\/10,
+html.light .bg-emerald-500\/20,
+html.light .bg-emerald-600\/20 {
+  background-color: #d1fae5 !important;
+  border-color: #a7f3d0 !important;
+}
+
+html.light .bg-amber-500\/10,
+html.light .bg-amber-500\/20,
+html.light .bg-amber-600\/20 {
+  background-color: #fef3c7 !important;
+  border-color: #fde68a !important;
+}
+
+html.light .bg-rose-500\/10,
+html.light .bg-rose-500\/20,
+html.light .bg-rose-600\/20 {
+  background-color: #ffe4e6 !important;
+  border-color: #fecdd3 !important;
+}
+
+/* --------------------------------------------------
+   Form Inputs & Selects in Light Mode
+-------------------------------------------------- */
+html.light input,
+html.light select,
+html.light textarea {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 1px #6366f1 !important;
+}
+
+/* --------------------------------------------------
+   Footer in Light Mode
+-------------------------------------------------- */
+html.light footer {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #475569 !important;
+}
+
+/* --------------------------------------------------
+   Meeting Room Video Feed Stage (Keep Theater Canvas)
+-------------------------------------------------- */
+.meeting-stage-dark {
+  background-color: #0a0f1d !important;
+  color: #f8fafc !important;
+}
+.meeting-stage-dark * {
+  border-color: #1e293b !important;
+}
+.meeting-stage-dark .text-white {
+  color: #ffffff !important;
+}
+.meeting-stage-dark .text-slate-300 {
+  color: #cbd5e1 !important;
+}
+.meeting-stage-dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
