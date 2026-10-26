@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://arena_admin:arena_secure_mongo_2026@mongodb:27017/interview_arena?authSource=admin
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID:-rzp_test_arena_demo}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET:-}
+      - UPI_MERCHANT_VPA=${UPI_MERCHANT_VPA:-arena.merchant@okhdfcbank}
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:7.0
+    container_name: interview_arena_mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: arena_admin
+      MONGO_INITDB_ROOT_PASSWORD: arena_secure_mongo_2026
+      MONGO_INITDB_DATABASE: interview_arena
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    restart: unless-stopped
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: interview_arena_mongo_express
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: arena_admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: arena_secure_mongo_2026
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: pass
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+volumes:
+  mongodata:
+    driver: local

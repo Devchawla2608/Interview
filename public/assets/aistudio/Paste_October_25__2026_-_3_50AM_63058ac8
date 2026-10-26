@@ -1,0 +1,1811 @@
+# Interview Arena — Complete Full-Stack Application Build Prompt
+
+## 1. Your Role and Objective
+
+Act as a senior software architect, product manager, UI/UX designer, full-stack developer, database architect, security engineer, QA engineer, and DevOps engineer.
+
+Build a complete, end-to-end web application named **Interview Arena**.
+
+This is a startup product where students and job seekers can pay for mock interviews conducted by approved student interviewers or experienced professionals.
+
+The application must be a functional, deployable product, not merely a landing page, static dashboard, prototype, or collection of mock screens.
+
+You must implement:
+
+- Frontend and backend.
+- Authentication and authorization.
+- PostgreSQL database and migrations.
+- Candidate dashboard.
+- Interviewer dashboard.
+- Admin dashboard.
+- Interviewer application and approval process.
+- Tier A, Tier B, and Tier C interview categories.
+- Configurable interview rounds.
+- Paid interview booking.
+- Real-time public interview queue.
+- Atomic interviewer acceptance.
+- Payment gateway integration.
+- Platform commission and interviewer earnings.
+- Refund management.
+- Interview scheduling.
+- Google Meet integration.
+- Notifications and email.
+- Interview feedback and ratings.
+- Admin financial management.
+- Security and audit logging.
+- Automated testing.
+- Docker and deployment configuration.
+- Complete documentation.
+
+**Important:** Do not stop after creating a plan or designing the frontend. Implement the actual application, connect it to the database, validate the complete workflow, and provide exact instructions for running and deploying it.
+
+If the repository already contains code, inspect it first and preserve useful existing functionality.
+
+When credentials are unavailable, implement the integration interface, configuration, setup documentation, and a clearly labeled development fallback. Never pretend that a payment, email, payout, or meeting was successfully completed when it was not.
+
+---
+
+# 2. Product Overview
+
+## Product name
+
+Interview Arena
+
+## Target audience
+
+- College students.
+- Freshers.
+- Software engineers.
+- Job seekers.
+- Candidates preparing for product-based companies.
+- Candidates preparing for service-based companies.
+- Experienced professionals changing jobs.
+- People preparing for technical, behavioral, and system design interviews.
+
+## Core concept
+
+The platform has three interview categories:
+
+- Tier A: highly competitive company preparation.
+- Tier B: established companies and moderately competitive interviews.
+- Tier C: entry-level, smaller-company, and fundamentals-focused interviews.
+
+Candidates select a company preparation track, choose an interview round, pay the applicable price, and join a queue.
+
+Approved interviewers can see eligible waiting sessions and accept them.
+
+Once an interviewer accepts a session, the system must assign that session to exactly one interviewer, notify both participants, and provide a real meeting link through the configured meeting provider.
+
+After the interview, the interviewer submits feedback and earns the configured share of the session fee.
+
+The platform retains its configured commission.
+
+The application must clearly state that these are simulated practice interviews and that company preparation tracks do not imply official partnerships or guarantee employment.
+
+---
+
+# 3. Technology Stack
+
+Use a maintainable, production-minded architecture.
+
+Recommended stack:
+
+### Frontend
+
+- Next.js with TypeScript and App Router.
+- React.
+- Tailwind CSS.
+- shadcn/ui or an equivalent accessible component library.
+- Responsive desktop, tablet, and mobile layouts.
+
+### Backend
+
+- Next.js server actions and route handlers, or a separate Node.js/Express backend if the repository architecture justifies it.
+- TypeScript.
+- Zod or equivalent input validation.
+- REST APIs or a documented, consistent server-action architecture.
+
+### Database
+
+- PostgreSQL.
+- Prisma ORM or Drizzle ORM.
+- Database migrations.
+- Foreign keys, indexes, unique constraints, and transactions.
+
+### Authentication
+
+Use a maintained authentication library compatible with the selected stack.
+
+Support secure email/password authentication, email verification, password reset, and optional OAuth.
+
+### Payments
+
+Use Razorpay or another provider that supports the required payment workflow in India.
+
+Use test mode during development.
+
+### Meetings
+
+Use the Google Calendar API to create calendar events with Google Meet conference data.
+
+Never generate fake Google Meet URLs.
+
+### Real-time communication
+
+Use WebSockets, Server-Sent Events, or another appropriate real-time mechanism for queue updates.
+
+Provide a documented polling fallback if necessary.
+
+### Email
+
+Use an adapter for a provider such as Resend, Amazon SES, or Postmark.
+
+### Testing
+
+Use appropriate tools for:
+
+- Unit tests.
+- Integration tests.
+- End-to-end tests.
+
+### Deployment
+
+Prepare the application for deployment using a compatible platform, managed PostgreSQL, environment variables, and CI.
+
+Docker and Docker Compose should be provided where appropriate.
+
+Use a modular monolith initially. Do not introduce unnecessary microservices.
+
+---
+
+# 4. User Roles and Account System
+
+The application must support three primary roles.
+
+## A. Candidate
+
+Candidates can:
+
+- Register and log in.
+- Complete their profile.
+- Browse company tracks.
+- Select Tier A, B, or C.
+- Browse interview rounds.
+- Select an interview type.
+- Pay for an interview.
+- Join a public waiting queue.
+- Book a scheduled interview.
+- Receive an interviewer assignment.
+- Join a meeting.
+- View interview history.
+- View feedback and scores.
+- Rate interviewers.
+- Request refunds when eligible.
+- Cancel or reschedule sessions according to the configured policy.
+- Report problems.
+- Manage notifications and account settings.
+
+## B. Interviewer
+
+Interviewers can:
+
+- Apply to become an interviewer.
+- Complete the screening process.
+- View application status.
+- Set their availability.
+- View eligible waiting sessions.
+- Accept interview requests.
+- Conduct interviews.
+- Submit structured feedback.
+- View assigned and completed sessions.
+- View earnings.
+- Track pending and available balances.
+- View payout history.
+- Manage their profile and skills.
+- Receive notifications.
+- Report technical issues or inappropriate conduct.
+
+Only approved interviewers can accept paid sessions.
+
+## C. Admin
+
+Admins can:
+
+- View platform analytics.
+- Manage users.
+- Approve or reject interviewer applications.
+- Review screening interviews.
+- Manage tiers, tracks, rounds, and categories.
+- Configure prices and commissions.
+- Manage bookings and waiting queues.
+- View payment transactions.
+- Approve eligible refunds.
+- Manage interviewer earnings and payouts.
+- Review disputes and user reports.
+- Configure refund policies.
+- Configure queue timeouts.
+- Monitor integration failures.
+- View audit logs.
+- Manage application settings.
+- Monitor database, payment, email, meeting, and background-job health.
+
+Admin permissions must be enforced on the server. Hiding admin buttons in the frontend is not sufficient.
+
+## One account, multiple roles
+
+A user should be able to use the same account as both a candidate and an interviewer.
+
+Provide a role switcher.
+
+Maintain separate candidate and interviewer profile records where appropriate.
+
+Do not require a person to create two accounts simply to use both features.
+
+---
+
+# 5. Authentication and User Profiles
+
+Implement:
+
+- Registration.
+- Login.
+- Logout.
+- Email verification.
+- Password reset.
+- Session management.
+- Optional OAuth.
+- Account suspension.
+- Account deletion requests.
+- Profile updates.
+- Terms and privacy acceptance.
+
+Profile fields may include:
+
+- Display name.
+- Profile image.
+- Skills.
+- Preferred job roles.
+- Experience level.
+- Graduation year.
+- College or employer, optional.
+- Bio.
+- Preferred interview languages.
+- Timezone.
+- Professional links, optional.
+
+Never store plaintext passwords.
+
+Use secure password hashing and the authentication framework's recommended session management.
+
+Protect sensitive routes and validate all requests on the server.
+
+Use rate limiting for login, password reset, payments, queue acceptance, and other sensitive operations.
+
+---
+
+# 6. Tier-Based Interview Categories
+
+Implement three configurable tiers.
+
+## Tier A — Top-tier preparation
+
+Initial price: ₹100 per interview session.
+
+Example preparation tracks:
+
+- Google.
+- Meta.
+- Amazon.
+- Microsoft.
+- Apple.
+- Netflix.
+- Adobe.
+- Uber.
+- Atlassian.
+
+These are preparation examples, not official classifications.
+
+### Typical practice pathway: 3–5 rounds
+
+**Round 1: Online Assessment / Coding Screen**
+
+Topics:
+
+- Data structures and algorithms.
+- Arrays and strings.
+- Hashing.
+- Binary search.
+- Trees and graphs.
+- Dynamic programming.
+- Time and space complexity.
+
+**Round 2: Technical Coding Interview**
+
+Topics:
+
+- Medium and hard coding problems.
+- Problem-solving approach.
+- Edge cases.
+- Complexity analysis.
+- Code quality.
+- Testing and communication.
+
+**Round 3: Advanced Technical Interview**
+
+Topics:
+
+- Advanced problem solving.
+- Role-specific technical knowledge.
+- Deeper engineering concepts.
+- Project-related technical questions.
+
+**Round 4: System Design**
+
+Topics:
+
+- High-level architecture.
+- API design.
+- Database design.
+- Caching.
+- Load balancing.
+- Scalability.
+- Reliability.
+- Availability.
+- Trade-offs.
+
+Make this round optional for roles where system design is not appropriate.
+
+**Round 5: Behavioral / Hiring Manager**
+
+Topics:
+
+- Project discussion.
+- Ownership.
+- Teamwork.
+- Conflict resolution.
+- Decision-making.
+- Communication.
+- Leadership and learning.
+
+Admins must be able to configure three, four, or five rounds for a particular track.
+
+## Tier B — Established company preparation
+
+Initial price: ₹80 per interview session.
+
+Typical practice pathway: 2–3 rounds.
+
+**Round 1: Coding and Fundamentals**
+
+Topics:
+
+- Basic and medium DSA.
+- OOP.
+- DBMS.
+- SQL.
+- Operating systems.
+- Computer networks.
+
+**Round 2: Role-Specific Technical Interview**
+
+Examples:
+
+- Frontend engineering.
+- Backend engineering.
+- Full-stack development.
+- Data engineering.
+- Cloud and DevOps.
+- QA and testing.
+
+**Round 3: Behavioral, Project Discussion, or Basic System Design**
+
+Topics depend on the selected role.
+
+Admins can configure two or three rounds.
+
+## Tier C — Entry-Level and Fundamentals Preparation
+
+Initial price: ₹60 per interview session.
+
+Typical practice pathway: 1–2 rounds, with an optional third.
+
+**Round 1: Fundamentals and Basic Coding**
+
+Topics:
+
+- Programming fundamentals.
+- Basic DSA.
+- OOP.
+- SQL.
+- Problem-solving fundamentals.
+
+**Round 2: Practical Technical Interview**
+
+Topics:
+
+- Role-specific questions.
+- Small coding exercises.
+- Debugging.
+- Project discussion.
+- Basic technical concepts.
+
+**Optional Round 3: Behavioral / HR**
+
+Topics:
+
+- Introduction.
+- Strengths and weaknesses.
+- Career goals.
+- Communication.
+- Basic project discussion.
+
+## Important round-management requirements
+
+The round count must not be hard-coded into the frontend.
+
+Admins must be able to configure:
+
+- Round name.
+- Tier.
+- Company preparation track.
+- Job role.
+- Description.
+- Topics.
+- Difficulty.
+- Duration.
+- Price.
+- Evaluation rubric.
+- Prerequisites.
+- Display order.
+- Active status.
+
+A candidate must see the recommended round pathway and their progress.
+
+Payment for one round must not automatically imply payment for all rounds.
+
+A future bundle feature may be added, but only if it has an explicit price, defined contents, and appropriate payment logic.
+
+---
+
+# 7. Interviewer Registration and Screening
+
+Provide a separate **Become an Interviewer** experience.
+
+The application should explain:
+
+- Eligibility.
+- Responsibilities.
+- Expected professionalism.
+- Interviewer compensation.
+- Platform commission.
+- Session cancellation rules.
+- Feedback requirements.
+- Code of conduct.
+
+Collect:
+
+- Skills.
+- Experience.
+- Preferred roles.
+- Languages.
+- Preferred tiers.
+- Availability.
+- Introduction.
+- Optional resume or professional profile.
+
+## Screening process
+
+Each applicant must complete two screening/practice interviews as required by the initial business model.
+
+Implement:
+
+1. Application submission.
+2. Screening interview scheduling.
+3. Completion of the first screening interview.
+4. Completion of the second screening interview.
+5. Evaluation against a structured rubric.
+6. Admin review.
+7. Approval, rejection, or request for additional information.
+
+Possible application states:
+
+- Draft.
+- Submitted.
+- Screening required.
+- Under review.
+- Approved.
+- Rejected.
+- Suspended.
+
+Completing two interviews must not automatically grant approval.
+
+An authorized admin must approve the interviewer.
+
+Only approved interviewers can accept paid interview requests.
+
+Store internal reviewer notes privately.
+
+---
+
+# 8. Interviewer Dashboard
+
+Build a complete interviewer dashboard.
+
+Display:
+
+- Online/offline availability.
+- Upcoming interviews.
+- Available queue requests.
+- Accepted sessions.
+- Completed sessions.
+- Pending feedback.
+- Ratings.
+- Completed interview count.
+- Pending earnings.
+- Available earnings.
+- Paid earnings.
+- Payout history.
+- Application status.
+- Notifications.
+- Reports and disputes.
+
+## Queue interface
+
+Each eligible queue card should display:
+
+- Interview tier.
+- Preparation track.
+- Round type.
+- Job role.
+- Duration.
+- Required skills.
+- Language.
+- Expected compensation.
+- Candidate preferences that are safe to disclose.
+
+Do not expose private candidate information in public queue cards.
+
+Interviewers can accept or decline eligible requests.
+
+The acceptance action must be atomic and server-authorized.
+
+Once accepted by one interviewer, the job must disappear from the available queue for everyone else.
+
+Prevent an interviewer from accepting overlapping sessions or sessions for which they are not qualified.
+
+---
+
+# 9. Candidate Dashboard
+
+Create a polished candidate dashboard with:
+
+- Upcoming interviews.
+- Current queue status.
+- Approximate waiting time, when meaningful.
+- Completed sessions.
+- Interview history.
+- Total practice sessions.
+- Spending summary.
+- Feedback and ratings.
+- Recommended tracks.
+- Recommended next round.
+- Profile completion.
+- Payment and refund notifications.
+
+Provide quick actions:
+
+- Browse interviews.
+- Start a practice interview.
+- Join the queue.
+- Book a scheduled interview.
+- View previous feedback.
+- Continue the recommended preparation pathway.
+
+## Interview discovery
+
+Candidates must be able to filter by:
+
+- Tier.
+- Company preparation track.
+- Job role.
+- Experience level.
+- Round.
+- Topic.
+- Difficulty.
+- Language.
+- Duration.
+- Price.
+- Interviewer rating.
+- Immediate queue.
+- Scheduled appointment.
+
+Each interview details page must clearly show the price and refund policy before checkout.
+
+---
+
+# 10. End-to-End Booking Workflow
+
+Implement this workflow carefully.
+
+### Step 1: Select an interview
+
+The candidate selects:
+
+- Tier.
+- Company preparation track.
+- Job role.
+- Interview round.
+- Preferred language.
+- Immediate queue or scheduled session.
+
+### Step 2: Validate the booking
+
+The backend validates:
+
+- User account status.
+- Selected track and round.
+- Current server-side price.
+- Availability.
+- Booking eligibility.
+- Duplicate booking requests.
+
+Never trust a price submitted by the frontend.
+
+### Step 3: Display checkout
+
+Show:
+
+- Session price.
+- Applicable taxes, if configured.
+- Any separately charged platform fee.
+- Total payable amount.
+- Cancellation policy.
+- Refund policy.
+- Expected session duration.
+
+### Step 4: Payment
+
+Create a payment order on the server.
+
+The booking must not be marked paid merely because the browser redirects to a success page.
+
+Verify payment through the provider's server-side verification and webhook flow.
+
+### Step 5: Enter queue
+
+After confirmed payment, create exactly one queue entry.
+
+Display:
+
+- Queue status.
+- Position, if available.
+- Approximate waiting time.
+- Selected interview.
+- Cancellation action.
+- Support information.
+
+### Step 6: Interviewer accepts
+
+Eligible interviewers receive real-time queue updates.
+
+The first valid interviewer to successfully claim the booking receives the assignment.
+
+The database must guarantee that two interviewers cannot claim the same booking.
+
+### Step 7: Confirmation
+
+Notify both participants.
+
+Update the booking state.
+
+Create or provision the meeting through the configured provider.
+
+### Step 8: Interview
+
+Both participants join the meeting.
+
+Provide a session workspace with the interview details, timer, checklist, and feedback form.
+
+### Step 9: Completion
+
+The interviewer submits feedback.
+
+The candidate may submit a rating and report a problem.
+
+Update the booking lifecycle and financial ledger according to the configured policy.
+
+### Step 10: Earnings
+
+The interviewer's share becomes eligible according to the configured completion and dispute-hold rules.
+
+If no interviewer accepts before the timeout, offer continued waiting, rescheduling, or the applicable refund process.
+
+Never silently retain payment for an unfulfilled session.
+
+---
+
+# 11. Real-Time Queue and Concurrency
+
+The queue is a core feature and must be implemented correctly.
+
+Use WebSockets, SSE, or another suitable real-time technology. A polling fallback is acceptable if documented.
+
+Requirements:
+
+- Separate queues by compatible tier, role, track, round, language, and skills.
+- Default to FIFO ordering.
+- Make any prioritization rules configurable and explainable.
+- Show only eligible requests to each interviewer.
+- Prevent duplicate queue entries.
+- Prevent duplicate payment fulfillment.
+- Prevent overlapping interviewer assignments.
+- Support cancellation.
+- Support interviewer claim expiration.
+- Recover abandoned assignments.
+- Handle browser refresh and network disconnects.
+- Provide a reliable queue state after reconnecting.
+- Notify participants when assignment changes.
+- Record booking and queue events for auditing.
+
+Use PostgreSQL transactions, row-level locks, conditional updates, or an equivalent atomic mechanism.
+
+For example, if two interviewers accept the same booking simultaneously, only one transaction may succeed. The other must receive a clear message that the session has already been claimed.
+
+---
+
+# 12. Payment Gateway Integration
+
+Integrate a real payment provider, preferably Razorpay if the required account capabilities are available.
+
+Use test mode during development.
+
+## Required payment flow
+
+1. Candidate initiates checkout.
+2. Backend validates the booking and amount.
+3. Backend creates the provider order.
+4. Frontend opens the provider checkout.
+5. Provider processes the payment.
+6. Backend verifies the returned signature where applicable.
+7. Backend processes a verified webhook.
+8. Payment and booking records are updated idempotently.
+9. Exactly one queue entry is created after confirmed payment.
+10. Candidate receives a confirmation notification.
+
+## Security requirements
+
+- Never expose payment secrets in frontend code.
+- Never store card details.
+- Verify provider signatures server-side.
+- Verify payment amount and currency.
+- Match the provider order to the correct user and booking.
+- Deduplicate webhook events.
+- Handle late and duplicate webhooks.
+- Handle failed payments and abandoned checkout.
+- Implement retry-safe processing.
+- Provide transaction history.
+- Provide payment status and receipts.
+- Provide refund status.
+- Include a local mock provider only for development and automated tests.
+
+A frontend success redirect must never be the sole proof of payment.
+
+## Payment states
+
+Support appropriate states such as:
+
+- Pending.
+- Authorized.
+- Captured or successful.
+- Failed.
+- Cancelled.
+- Partially refunded.
+- Refunded.
+- Disputed.
+
+Use the payment provider's actual supported states.
+
+---
+
+# 13. Commission and Interviewer Earnings
+
+The platform earns a commission from each completed eligible session.
+
+Make the commission configurable through the admin dashboard.
+
+For development, seed an example commission:
+
+- Platform commission: 20%.
+- Interviewer share: 80%.
+
+This is a configurable example, not a final business decision.
+
+## Example
+
+For a ₹100 session with a 20% commission on the eligible base amount:
+
+- Candidate session price: ₹100 before any separately applicable taxes.
+- Platform commission: ₹20.
+- Interviewer gross share: ₹80.
+
+Document how payment-provider fees and applicable taxes are treated. Do not silently deduct unexpected charges.
+
+## Earnings dashboard
+
+Interviewers should see:
+
+- Pending earnings.
+- Available earnings.
+- Paid earnings.
+- Reversed earnings.
+- Earnings on hold.
+- Session-wise earning details.
+- Payout history.
+
+## Financial ledger
+
+Implement an immutable or append-only accounting ledger.
+
+Record:
+
+- Successful payment.
+- Platform commission.
+- Interviewer earning.
+- Refund.
+- Refund reversal where applicable.
+- Payout.
+- Payout failure.
+- Administrative adjustment.
+
+Never silently edit historical financial entries. Correct mistakes using explicit reversal or adjustment entries.
+
+## Payouts
+
+Implement a payout adapter.
+
+If the provider supports marketplace payouts and the business account is eligible, integrate the supported flow.
+
+Otherwise, provide an admin-managed payout workflow with statuses, references, and reconciliation.
+
+Do not claim a bank transfer occurred unless the provider or authorized operator confirms it.
+
+Prevent payout of disputed, reversed, or ineligible earnings.
+
+Before production, verify the payment provider's support for marketplace payments, split settlements, third-party payouts, KYC, and applicable Indian requirements.
+
+---
+
+# 14. Refund and Cancellation System
+
+Create a configurable refund policy.
+
+Handle:
+
+- Candidate cancels before interviewer assignment.
+- No interviewer accepts before the timeout.
+- Interviewer cancels after accepting.
+- Candidate does not attend.
+- Interviewer does not attend.
+- Meeting integration fails.
+- Technical problems prevent the session.
+- Both parties request rescheduling.
+- Duplicate payments.
+- Disputed or incomplete interviews.
+- Admin-approved goodwill refunds.
+
+Before checkout, explain the applicable cancellation and refund policy.
+
+Admins must be able to:
+
+- View refund requests.
+- Review the booking and payment.
+- Approve or reject eligible requests.
+- Initiate provider refunds.
+- Track refund status.
+- Record reason codes.
+- View audit history.
+
+Refund operations must be permission-controlled and idempotent.
+
+Never show a refund as completed until the provider confirms it.
+
+Ensure refunds produce the correct accounting entries.
+
+---
+
+# 15. Scheduling System
+
+Support scheduled appointments in addition to immediate queue-based interviews.
+
+Implement:
+
+- Interviewer availability.
+- Availability calendar.
+- Time-off blocks.
+- Slot reservation.
+- Duration configuration.
+- Buffer times.
+- Minimum booking notice.
+- Maximum daily session limits.
+- Rescheduling.
+- Cancellation.
+- Calendar invitations.
+- Reminder notifications.
+- Timezone-aware display.
+- Conflict prevention.
+
+Store timestamps consistently in UTC and display times in the user's timezone.
+
+Prevent overlapping bookings through server-side transactional checks.
+
+An interviewer must not be assigned two sessions that overlap.
+
+---
+
+# 16. Google Meet Integration
+
+Implement real Google Meet generation through the Google Calendar API.
+
+Do not generate fake Meet URLs.
+
+## Required workflow
+
+1. Confirm the booking and its eligibility.
+2. Check whether a meeting has already been created.
+3. Use the configured Google integration to create a calendar event with Meet conference data.
+4. Verify that the provider returned a real meeting URL.
+5. Store the provider event ID, meeting URL, creation status, and timestamps.
+6. Notify the candidate and assigned interviewer.
+7. Display the Join Meeting action to authorized participants.
+
+## Required handling
+
+- OAuth configuration.
+- Appropriate API scopes.
+- Token expiry.
+- Revoked authorization.
+- API quotas.
+- Transient failures.
+- Duplicate event prevention.
+- Safe retries.
+- Meeting creation status.
+- Meeting URL access control.
+- Rescheduling and cancellation behavior.
+
+Document the required Google Cloud project setup, API enablement, OAuth consent configuration, redirect URLs, and credentials.
+
+If the integration is not configured, clearly display that the meeting provider is unavailable.
+
+Never show a fake URL as if it were a real meeting.
+
+Prefer Google Meet or another managed meeting provider over building a custom WebRTC platform for the first release.
+
+---
+
+# 17. Interview Session Workspace
+
+Create a dedicated workspace for each interview.
+
+Display:
+
+- Booking details.
+- Candidate and interviewer.
+- Tier.
+- Company preparation track.
+- Round.
+- Role.
+- Topics.
+- Difficulty.
+- Duration.
+- Scheduled time.
+- Meeting status.
+- Join Meeting button.
+- Interview checklist.
+- Timer.
+- Notes.
+- Feedback form.
+- Report problem action.
+- No-show controls.
+
+Allow private notes and clearly define who can access them.
+
+Do not record audio or video by default.
+
+If recording is added later, require informed consent from both participants and implement secure storage, access control, retention, and deletion policies.
+
+---
+
+# 18. Interview Feedback and Ratings
+
+After the interview, require the interviewer to submit structured feedback.
+
+Possible rubric criteria:
+
+- Problem understanding.
+- Clarifying questions.
+- Problem-solving approach.
+- Technical correctness.
+- Edge cases.
+- Code quality.
+- Testing.
+- Time and space complexity.
+- Domain knowledge.
+- Communication.
+- Collaboration.
+- Time management.
+
+The rubric must adapt to the interview type.
+
+Provide:
+
+- Criterion-level ratings.
+- Written feedback.
+- Strengths.
+- Areas for improvement.
+- Recommended topics.
+- Recommended next round.
+- Overall practice readiness.
+
+Candidates can rate the interview experience and report concerns.
+
+Prevent duplicate reviews for the same session.
+
+Provide moderation tools for inappropriate reviews and reports.
+
+Make it clear that practice scores are not official employer hiring decisions.
+
+---
+
+# 19. Notifications and Email
+
+Implement an in-app notification center and an email-provider adapter.
+
+Send notifications for:
+
+- Registration.
+- Email verification.
+- Password reset.
+- Interviewer application submission.
+- Interviewer approval or rejection.
+- Payment success or failure.
+- Queue entry.
+- Interviewer assignment.
+- Queue timeout.
+- Booking confirmation.
+- Rescheduling.
+- Cancellation.
+- Meeting link availability.
+- Upcoming interview reminders.
+- Interview completion.
+- Feedback availability.
+- Refund status.
+- Reports and disputes.
+- Payout status.
+- Admin announcements.
+
+Use configurable reminder timings, such as 24 hours and 15 minutes before a scheduled interview.
+
+Implement retry logic, delivery status, and deduplication.
+
+Never log password-reset tokens or secret credentials.
+
+If email credentials are missing, clearly identify email delivery as unconfigured and provide setup instructions.
+
+---
+
+# 20. Admin Dashboard — Mandatory
+
+Build a full admin dashboard, not just a visual mockup.
+
+## Admin overview
+
+Show real database-backed metrics:
+
+- Total users.
+- Active users.
+- Candidates.
+- Interviewer applicants.
+- Approved interviewers.
+- Sessions completed.
+- Sessions by tier.
+- Sessions by track and round.
+- Successful payments.
+- Gross payment volume.
+- Refund totals.
+- Platform commission revenue.
+- Interviewer earnings liabilities.
+- Payout totals.
+- Queue waiting times.
+- Acceptance rate.
+- Timeout rate.
+- No-show rate.
+- Disputes.
+- Failed webhooks and background jobs.
+- Integration health.
+
+Provide date filters and clear definitions for financial metrics.
+
+Never invent live analytics.
+
+## User management
+
+Admins can:
+
+- Search users.
+- Filter by role and status.
+- View authorized profile details.
+- Review interview history.
+- Approve or suspend accounts.
+- Manage roles.
+- Ban or reactivate users.
+- Record reasons for consequential actions.
+
+Every sensitive action must be audited.
+
+## Interviewer management
+
+Admins can:
+
+- View applications.
+- Review screening interviews.
+- Evaluate screening rubrics.
+- Approve or reject applications.
+- Request additional information.
+- Configure interviewer qualifications.
+- View quality metrics.
+- Review reports and disputes.
+- Suspend interviewers when appropriate.
+
+## Catalog management
+
+Admins can:
+
+- Create and edit tiers.
+- Configure prices.
+- Create company preparation tracks.
+- Configure job roles.
+- Configure skills and topics.
+- Create and edit rounds.
+- Set durations.
+- Set difficulty.
+- Configure rubrics.
+- Define prerequisites.
+- Enable and disable catalog items.
+
+Archive historical catalog records rather than deleting records required by existing bookings.
+
+## Booking and queue management
+
+Admins can:
+
+- Search all bookings.
+- Inspect booking events.
+- Find stuck queue entries.
+- Find expired interviewer claims.
+- Identify paid sessions without an interviewer.
+- Identify meeting-generation failures.
+- Reassign eligible sessions.
+- Cancel or reschedule sessions.
+- Escalate unresolved cases.
+- Record reasons for manual overrides.
+
+## Financial management
+
+Admins can:
+
+- View payment transactions.
+- View webhook events.
+- Review refund requests.
+- Initiate authorized refunds.
+- Inspect financial ledgers.
+- View interviewer earnings.
+- Manage payout batches.
+- View failed payouts.
+- Reconcile payment totals.
+- Export authorized reports.
+
+Protect financial exports and audit access.
+
+## Settings
+
+Provide configurable settings for:
+
+- Tier prices.
+- Commission percentage.
+- Round definitions.
+- Queue timeout.
+- Claim timeout.
+- Reminder timings.
+- Cancellation rules.
+- Refund rules.
+- Earnings hold period.
+- Payout settings.
+- Feature flags.
+- Maintenance mode.
+- Email integration.
+- Meeting integration.
+- Payment integration.
+
+Never expose provider secrets in the admin interface.
+
+---
+
+# 21. Database Schema
+
+Use PostgreSQL and create actual migrations.
+
+The following entities are required conceptually. You may adapt the names to the selected ORM.
+
+## Identity
+
+- `users`
+- `user_roles`
+- `candidate_profiles`
+- `interviewer_profiles`
+- `interviewer_applications`
+- `interviewer_screenings`
+- Authentication sessions as required.
+- Password-reset token records if required.
+
+## Catalog
+
+- `tiers`
+- `company_tracks`
+- `job_roles`
+- `skills`
+- `track_skills`
+- `languages`
+- `round_templates`
+
+## Scheduling and interviews
+
+- `interviewer_availability`
+- Availability exceptions or time-off blocks.
+- `bookings`
+- `queue_entries`
+- `booking_events`
+- `meeting_sessions`
+- `interview_notes`
+- `interview_feedback`
+- `reviews`
+
+## Payments and accounting
+
+- `payment_orders`
+- `payment_transactions`
+- `webhook_events`
+- `refunds`
+- `ledger_accounts` or equivalent accounting structures.
+- `ledger_entries`
+- `payouts`
+- Receipts or invoice records where required.
+
+## Operations
+
+- `notifications`
+- `user_reports`
+- `disputes`
+- `admin_audit_logs`
+- `app_settings`
+- Feature flags.
+- Idempotency records where needed.
+
+## Database requirements
+
+- Proper foreign keys.
+- Appropriate indexes.
+- Unique normalized email addresses.
+- Unique provider event IDs.
+- Unique idempotency keys.
+- Transactional booking assignment.
+- Transactional payment fulfillment.
+- Transactional refund and ledger operations.
+- Transactional payout accounting.
+- Append-only financial history.
+- Safe archival and deletion behavior.
+- Migration and seed commands.
+- Fake development seed users and catalog data.
+
+Do not seed production credentials or real personal information.
+
+---
+
+# 22. API and Backend Architecture
+
+Implement validated and authorized APIs or server actions for:
+
+- Authentication.
+- User profiles.
+- Candidate dashboard.
+- Interviewer dashboard.
+- Admin dashboard.
+- Catalog search.
+- Interviewer applications.
+- Screening and approvals.
+- Availability management.
+- Booking creation.
+- Checkout and payment order creation.
+- Payment verification.
+- Webhook processing.
+- Queue join and cancellation.
+- Queue status.
+- Atomic interviewer acceptance.
+- Scheduling and rescheduling.
+- Meeting creation and retries.
+- Interview start and completion.
+- Feedback submission.
+- Reviews.
+- Reports and disputes.
+- Refunds.
+- Earnings.
+- Payouts.
+- Notifications.
+- Admin configuration and audit logs.
+
+Validate all inputs.
+
+Enforce authorization on the server.
+
+Use consistent error responses.
+
+Use rate limiting for sensitive endpoints.
+
+Never trust user-supplied prices, roles, commission amounts, payment states, or interviewer approval status.
+
+Keep payment, booking, and queue states consistent.
+
+---
+
+# 23. Booking and Payment State Machines
+
+Use explicit state transitions.
+
+Example booking states:
+
+- `draft`
+- `awaiting_payment`
+- `payment_pending`
+- `paid`
+- `queued`
+- `claimed`
+- `scheduled`
+- `meeting_pending`
+- `ready`
+- `in_progress`
+- `completed`
+- `cancelled`
+- `no_show_candidate`
+- `no_show_interviewer`
+- `disputed`
+- `refund_pending`
+- `refunded`
+- `failed`
+
+Keep payment status separate from booking status if appropriate.
+
+For every transition, define:
+
+- Authorized actor.
+- Preconditions.
+- Database transaction.
+- Notifications.
+- Financial consequences.
+- Audit event.
+- Retry behavior.
+- Recovery procedure.
+
+Use background jobs for:
+
+- Queue timeouts.
+- Expired claims.
+- Booking reminders.
+- Webhook retries.
+- Meeting creation retries.
+- Stuck queue recovery.
+- Payout processing.
+
+Every background job must be safe to retry and idempotent.
+
+---
+
+# 24. UI/UX Requirements
+
+Create a polished, modern SaaS product.
+
+Do not generate a generic template with disconnected pages.
+
+Use:
+
+- Consistent typography.
+- Clear navigation.
+- Professional color palette.
+- Responsive layouts.
+- Accessible components.
+- Loading states.
+- Skeleton screens.
+- Error states.
+- Empty states.
+- Confirmation dialogs.
+- Inline validation.
+- Toast notifications.
+- Search, sorting, filters, and pagination.
+- Keyboard accessibility.
+- Useful mobile layouts.
+- Light/dark mode if practical.
+
+No dead buttons.
+
+No fake testimonials.
+
+No fake payment success.
+
+No fake ratings or analytics presented as live data.
+
+## Required screens
+
+1. Landing page.
+2. Registration and login.
+3. Email verification.
+4. Password reset.
+5. Candidate onboarding.
+6. Candidate dashboard.
+7. Interview catalog.
+8. Track details.
+9. Checkout.
+10. Payment status.
+11. Real-time queue.
+12. Booking details.
+13. Meeting workspace.
+14. Interview history.
+15. Feedback/results.
+16. Become-an-interviewer page.
+17. Interviewer application.
+18. Screening status.
+19. Interviewer dashboard.
+20. Availability calendar.
+21. Interviewer queue.
+22. Interview session workspace.
+23. Interviewer earnings.
+24. Payout history.
+25. Notification center.
+26. Account settings.
+27. Admin overview.
+28. Admin user management.
+29. Admin interviewer applications.
+30. Admin tier and catalog management.
+31. Admin round management.
+32. Admin booking and queue management.
+33. Admin payment and refund management.
+34. Admin ledger and payout management.
+35. Admin disputes and reports.
+36. Admin integration health.
+37. Admin settings.
+38. Audit log.
+39. Terms and privacy.
+40. Refund/cancellation policy.
+41. FAQ and support.
+42. Error and not-found pages.
+
+---
+
+# 25. Security and Privacy
+
+Follow OWASP-aligned practices.
+
+Implement:
+
+- Secure password hashing.
+- Secure sessions and cookies.
+- HTTPS in production.
+- CSRF protection where applicable.
+- XSS prevention.
+- Parameterized database queries.
+- Server-side authorization.
+- Object-level access control.
+- Input validation.
+- Rate limiting.
+- Webhook signature verification.
+- Replay protection.
+- Idempotency.
+- Safe error messages.
+- Security headers.
+- Least-privilege credentials.
+- Audit logs.
+- Backup and restore documentation.
+- Data-retention rules.
+- Account deletion/export workflows where appropriate.
+
+Never commit credentials to source control.
+
+Never expose server secrets in frontend bundles.
+
+Never expose private meeting URLs or financial records to unauthorized users.
+
+Do not store audio/video recordings by default.
+
+Include a production-launch checklist for privacy, tax, payment-provider terms, marketplace payouts, and applicable Indian legal requirements. Do not claim that the application is legally compliant without professional review.
+
+---
+
+# 26. Environment Variables and Credentials
+
+Create `.env.example` containing placeholders and comments.
+
+Include the variables required for:
+
+- Application URL.
+- Runtime environment.
+- PostgreSQL connection.
+- Authentication secret.
+- OAuth configuration, if enabled.
+- Payment provider public key or merchant identifier.
+- Payment provider server secret.
+- Payment webhook secret.
+- Google OAuth client ID.
+- Google OAuth client secret.
+- Google redirect URI.
+- Email provider API key.
+- Email sender address.
+- Optional real-time service configuration.
+- Optional monitoring and error reporting.
+
+Use the actual variable names selected by the implementation.
+
+Never hard-code credentials.
+
+Never commit `.env`.
+
+Do not ask the user to paste production secrets into source code or a public prompt.
+
+Validate required configuration and show clear errors without exposing secret values.
+
+Use separate credentials for development, staging, and production.
+
+---
+
+# 27. Testing Requirements
+
+Create meaningful automated tests.
+
+## Unit tests
+
+Test:
+
+- Tier pricing.
+- Commission calculations.
+- Refund calculations.
+- Ledger entries.
+- Booking state transitions.
+- Queue eligibility.
+- Interviewer matching.
+- Claim expiration.
+- Permissions.
+- Configuration validation.
+
+## Integration tests
+
+Test:
+
+- Registration and authentication.
+- Role-based authorization.
+- Booking creation.
+- Payment webhook success.
+- Payment failure.
+- Invalid webhook signature.
+- Duplicate webhook delivery.
+- Exactly one queue entry after confirmed payment.
+- Concurrent interviewer acceptance.
+- Rejection of overlapping sessions.
+- Queue timeout recovery.
+- Refund and ledger consistency.
+- Meeting creation retry.
+- Feedback submission.
+- Admin authorization and audit logging.
+- Payout eligibility.
+
+## End-to-end tests
+
+Test this complete workflow:
+
+1. A candidate registers.
+2. The candidate browses interview tracks.
+3. The candidate selects a tier and round.
+4. The candidate completes a test-mode payment flow.
+5. The verified test webhook confirms payment.
+6. The candidate enters the queue.
+7. An approved interviewer sees the request.
+8. The interviewer accepts the request.
+9. The system assigns the booking exactly once.
+10. The configured meeting provider creates a meeting, or a test adapter simulates it.
+11. Both participants can access the appropriate session information.
+12. The interviewer completes the interview and submits feedback.
+13. The candidate sees the feedback.
+14. The financial ledger reflects the applicable commission and interviewer earning.
+15. The admin can inspect the booking and financial records.
+
+Also test failure scenarios, permissions, duplicate requests, mobile layouts, and recovery behavior.
+
+---
+
+# 28. Deployment and Documentation
+
+Create these files:
+
+- `README.md`
+- `.env.example`
+- `.gitignore`
+- Database schema and migrations.
+- Seed scripts.
+- Automated tests.
+- `Dockerfile`.
+- `docker-compose.yml`, if appropriate.
+- CI workflow.
+- `ARCHITECTURE.md`
+- `SECURITY.md`
+- `API.md` or generated API documentation.
+- Deployment guide.
+- Backup and restore guide.
+- Payment provider setup guide.
+- Google Meet setup guide.
+- Email provider setup guide.
+
+Document the exact commands to:
+
+1. Install dependencies.
+2. Configure environment variables.
+3. Start PostgreSQL.
+4. Run database migrations.
+5. Seed demo data.
+6. Start the application.
+7. Run tests.
+8. Run lint and type checking.
+9. Build for production.
+10. Deploy the application.
+11. Configure payment webhooks.
+12. Configure Google OAuth and Meet.
+13. Configure email delivery.
+
+Adapt the commands to the actual package manager and architecture.
+
+Provide a straightforward local development experience.
+
+If practical, support starting the app and database using Docker Compose.
+
+Do not claim that the app has been deployed unless deployment was actually completed and verified.
+
+---
+
+# 29. Implementation Plan
+
+Execute all phases.
+
+Do not stop after presenting a plan.
+
+### Phase 1: Foundation
+
+- Inspect repository.
+- Configure frontend and backend.
+- Set up PostgreSQL.
+- Create migrations.
+- Implement authentication.
+- Implement roles and authorization.
+- Seed development data.
+
+### Phase 2: Catalog and dashboards
+
+- Implement tiers and tracks.
+- Implement configurable rounds.
+- Implement candidate dashboard.
+- Implement interviewer dashboard.
+- Implement admin dashboard.
+- Implement interviewer application workflow.
+
+### Phase 3: Booking and queue
+
+- Implement booking lifecycle.
+- Implement availability.
+- Implement queue creation.
+- Implement atomic acceptance.
+- Implement real-time updates.
+- Implement timeout and recovery jobs.
+
+### Phase 4: Payments and accounting
+
+- Implement provider adapter.
+- Implement checkout.
+- Implement server-side verification.
+- Implement webhooks.
+- Implement commission calculations.
+- Implement immutable financial ledger.
+- Implement refund workflow.
+- Implement payout workflow.
+
+### Phase 5: Meetings and notifications
+
+- Integrate Google Calendar and Meet.
+- Implement meeting status.
+- Implement email notifications.
+- Implement reminders.
+- Implement retry and recovery logic.
+
+### Phase 6: Interview operations
+
+- Implement session workspace.
+- Implement feedback.
+- Implement ratings.
+- Implement reports and disputes.
+
+### Phase 7: Admin and operations
+
+- Implement analytics.
+- Implement financial management.
+- Implement audit logs.
+- Implement integration health.
+- Implement queue recovery tools.
+- Implement configuration management.
+
+### Phase 8: Testing and deployment
+
+- Run unit tests.
+- Run integration tests.
+- Run end-to-end tests.
+- Run lint and type checking.
+- Run production build.
+- Fix failures.
+- Complete documentation.
+- Validate deployment configuration.
+
+If execution limits are reached, preserve the working code and clearly report unfinished work. Continue implementation in subsequent passes rather than replacing functioning code with mock screens.
+
+---
+
+# 30. Final Acceptance Criteria
+
+The application is complete only when:
+
+- The repository contains the actual application code.
+- Database migrations run successfully.
+- Seed data can be created.
+- Authentication and permissions work.
+- Candidate, interviewer, and admin dashboards function.
+- Interviewer applications and approval work.
+- Tier prices and round structures are configurable.
+- Candidates can create bookings.
+- Payment verification is implemented server-side.
+- The queue works correctly.
+- Concurrent acceptance cannot assign the same session twice.
+- Interviewers can conduct sessions and submit feedback.
+- Google Meet integration is implemented and configured, or its missing credentials are explicitly documented.
+- Commission and ledger calculations are correct.
+- Refund workflows are implemented.
+- Payout workflows are implemented to the extent supported by the configured provider.
+- Notifications are implemented, with provider configuration status clearly indicated.
+- Security checks are implemented.
+- Automated tests are included.
+- README and deployment instructions are complete.
+- There are no core dead-end screens.
+- No fake payment, meeting link, payout, or live metric is presented as real.
+- Lint, type checking, tests, and production build pass, or remaining failures are explicitly documented.
+
+# 31. Final Report
+
+When finished, provide:
+
+1. Repository structure.
+2. Features actually implemented.
+3. Database schema and migration status.
+4. Exact setup and run commands.
+5. Required environment variables.
+6. Payment provider setup and webhook instructions.
+7. Google Meet setup instructions.
+8. Email and real-time setup.
+9. Test, lint, typecheck, and build results.
+10. Deployment instructions.
+11. Security and production-launch checklist.
+12. Known limitations.
+13. Integrations that still require credentials.
+14. A clear distinction between implemented/tested, implemented but untested, and not implemented.
+
+Be completely truthful about the results.
+
+**Begin by inspecting the existing repository, then implement the complete Interview Arena application. Do not return only a plan or code snippets.**
